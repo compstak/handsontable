@@ -261,6 +261,7 @@ Handsontable.hooks.register('afterContextMenuDefaultOptions');
 Handsontable.hooks.register('afterContextMenuShow');
 Handsontable.hooks.register('afterContextMenuHide');
 Handsontable.hooks.register('afterContextMenuExecute');
+Handsontable.hooks.register('beforeContextMenuShow');
 
 export {ContextMenu};
 
