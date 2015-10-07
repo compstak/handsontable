@@ -115,6 +115,7 @@ class ContextMenu extends BasePlugin {
       this.menu = new Menu(this.hot, {className: 'htContextMenu'});
       this.menu.setMenuItems(menuItems);
 
+      this.menu.addLocalHook('beforeOpen', () => this.hot.runHooks('beforeContextMenuShow', this));
       this.menu.addLocalHook('afterOpen', () => this.hot.runHooks('afterContextMenuShow', this));
       this.menu.addLocalHook('afterClose', () => this.hot.runHooks('afterContextMenuHide', this));
       this.menu.addLocalHook('executeCommand', (...params) => this.executeCommand.apply(this, params));
