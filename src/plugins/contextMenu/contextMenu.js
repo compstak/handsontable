@@ -116,7 +116,7 @@ class ContextMenu extends BasePlugin {
       this.menu.setMenuItems(menuItems);
 
       this.menu.addLocalHook('beforeOpen', () => {
-        this.onBeforeContextMenuShow(this.itemsFactory, settings);
+        this.onBeforeContextMenuShow();
         this.hot.runHooks('beforeContextMenuShow', this);
       });
       this.menu.addLocalHook('afterOpen', () => this.hot.runHooks('afterContextMenuShow', this));
@@ -260,9 +260,8 @@ class ContextMenu extends BasePlugin {
    *
    * @private
    */
-  onBeforeContextMenuShow(itemsFactory, settings) {
-    let menuItems = itemsFactory.getVisibleItems(settings);
-    this.menu = new Menu(this.hot, {className: 'htContextMenu'});
+  onBeforeContextMenuShow() {
+    let menuItems = this.itemsFactory.getVisibleItems();
     this.menu.setMenuItems(menuItems);
   }
 }
