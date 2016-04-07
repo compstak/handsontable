@@ -4056,7 +4056,7 @@ var domHelpers = ($__helpers_47_dom_47_element__ = require("helpers/dom/element"
 var domEventHelpers = ($__helpers_47_dom_47_event__ = require("helpers/dom/event"), $__helpers_47_dom_47_event__ && $__helpers_47_dom_47_event__.__esModule && $__helpers_47_dom_47_event__ || {default: $__helpers_47_dom_47_event__});
 var HELPERS = [arrayHelpers, browserHelpers, dataHelpers, functionHelpers, mixedHelpers, numberHelpers, objectHelpers, settingHelpers, stringHelpers, unicodeHelpers];
 var DOM = [domHelpers, domEventHelpers];
-Handsontable.buildDate = 'Fri Mar 18 2016 10:31:58 GMT-0400 (EDT)';
+Handsontable.buildDate = 'Thu Apr 07 2016 14:57:14 GMT-0400 (EDT)';
 Handsontable.packageName = 'handsontable';
 Handsontable.version = '0.21.0';
 var baseVersion = '@@baseVersion';
@@ -12673,7 +12673,6 @@ var $ContextMenu = ContextMenu;
     }
     this.itemsFactory = new ItemsFactory(this.hot, $ContextMenu.DEFAULT_ITEMS);
     var settings = this.hot.getSettings().contextMenu;
-    console.log(settings);
     var predefinedItems = {items: this.itemsFactory.getVisibleItems(settings)};
     this.registerEvents();
     if (typeof settings.callback === 'function') {
@@ -12770,10 +12769,14 @@ var $ContextMenu = ContextMenu;
     }));
     var menuItems = this.itemsFactory.predefinedItems;
     this.itemsFactory.setPredefinedItems(menuItems);
-    this.menu = new Menu(this.hot, {
+    var options = {
       className: 'htContextMenu',
       keepInViewport: true
-    });
+    };
+    if (settings.options) {
+      Object.assign(options, settings.options);
+    }
+    this.menu = new Menu(this.hot, options);
     this.menu.setMenuItems(menuItems);
     this.menu.addLocalHook('beforeOpen', (function() {
       $__12.onBeforeContextMenuShow();
@@ -21128,5 +21131,5 @@ if (typeof exports !== "undefined") {
 }).call(window);
 
 //# 
-},{}]},{},[23,59,61,60,62,83,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,84,85,86,87,100,101,102,90,91,92,93,94,95,31,35,32,33,40,34,36,37,38,39])("numeral")
+},{}]},{},[23,59,60,61,62,83,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,84,85,86,87,100,101,102,90,91,92,93,94,95,31,35,32,33,40,34,36,37,38,39])("numeral")
 });
