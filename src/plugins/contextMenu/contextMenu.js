@@ -267,6 +267,7 @@ class ContextMenu extends BasePlugin {
 
     let options = { className: 'htContextMenu', keepInViewport: true };
 
+    const settings = this.hot.getSettings().contextMenu;
     if (settings.options) {
       Object.assign(options, settings.options);
     }

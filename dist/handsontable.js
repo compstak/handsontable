@@ -4056,7 +4056,7 @@ var domHelpers = ($__helpers_47_dom_47_element__ = require("helpers/dom/element"
 var domEventHelpers = ($__helpers_47_dom_47_event__ = require("helpers/dom/event"), $__helpers_47_dom_47_event__ && $__helpers_47_dom_47_event__.__esModule && $__helpers_47_dom_47_event__ || {default: $__helpers_47_dom_47_event__});
 var HELPERS = [arrayHelpers, browserHelpers, dataHelpers, functionHelpers, mixedHelpers, numberHelpers, objectHelpers, settingHelpers, stringHelpers, unicodeHelpers];
 var DOM = [domHelpers, domEventHelpers];
-Handsontable.buildDate = 'Thu Apr 07 2016 14:57:14 GMT-0400 (EDT)';
+Handsontable.buildDate = 'Tue Apr 19 2016 12:58:23 GMT-0400 (EDT)';
 Handsontable.packageName = 'handsontable';
 Handsontable.version = '0.21.0';
 var baseVersion = '@@baseVersion';
@@ -12773,6 +12773,7 @@ var $ContextMenu = ContextMenu;
       className: 'htContextMenu',
       keepInViewport: true
     };
+    var settings = this.hot.getSettings().contextMenu;
     if (settings.options) {
       Object.assign(options, settings.options);
     }
