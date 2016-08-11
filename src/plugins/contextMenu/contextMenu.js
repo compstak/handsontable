@@ -1,4 +1,4 @@
-
+import Handsontable from './../../browser';
 import BasePlugin from './../_base';
 import {arrayEach} from './../../helpers/array';
 import {CommandExecutor} from './commandExecutor';
@@ -6,7 +6,6 @@ import {EventManager} from './../../eventManager';
 import {hasClass} from './../../helpers/dom/element';
 import {ItemsFactory} from './itemsFactory';
 import {Menu} from './menu';
-import {objectEach, mixin} from './../../helpers/object';
 import {registerPlugin} from './../../plugins';
 import {stopPropagation, pageX, pageY} from './../../helpers/dom/event';
 import {getWindowScrollLeft, getWindowScrollTop} from './../../helpers/dom/element';
@@ -21,13 +20,12 @@ import {
   REDO,
   READ_ONLY,
   ALIGNMENT,
-  SEPARATOR,
-  predefinedItems
+  SEPARATOR
 } from './predefinedItems';
 
 /**
  * @description
- * This plugin creates the Handsontable Context Menu. It allows to create new row or
+ * This plugin creates the Handsontable Context Menu. It allows to create a new row or
  * column at any place in the grid among [other features](http://docs.handsontable.com/demo-context-menu.html).
  * Possible values:
  * * `true` (to enable default options),
@@ -123,7 +121,7 @@ class ContextMenu extends BasePlugin {
     const settings = this.hot.getSettings().contextMenu;
 
     let predefinedItems = {
-      items: this.itemsFactory.getVisibleItems(settings)
+      items: this.itemsFactory.getItems(settings)
     };
     this.registerEvents();
 
@@ -136,7 +134,7 @@ class ContextMenu extends BasePlugin {
       this.hot.runHooks('afterContextMenuDefaultOptions', predefinedItems);
 
       this.itemsFactory.setPredefinedItems(predefinedItems.items);
-      let menuItems = this.itemsFactory.getVisibleItems(settings);
+      let menuItems = this.itemsFactory.getItems(settings);
 
       let options = { className: 'htContextMenu', keepInViewport: true };
 
@@ -159,6 +157,16 @@ class ContextMenu extends BasePlugin {
       // Register all commands. Predefined and added by user or by plugins
       arrayEach(menuItems, (command) => this.commandExecutor.registerCommand(command.key, command));
     });
+  }
+
+  /**
+   * Updates the plugin to use the latest options you have specified.
+   */
+  updatePlugin() {
+    this.disablePlugin();
+    this.enablePlugin();
+
+    super.updatePlugin();
   }
 
   /**
@@ -313,13 +321,6 @@ class ContextMenu extends BasePlugin {
 
     if (!(showRowHeaders || showColHeaders)) {
       if (!isValidElement(element) && !(hasClass(element, 'current') && hasClass(element, 'wtBorder'))) {
-        return;
-      }
-    } else if (showRowHeaders && showColHeaders) {
-      // do nothing after right-click on corner header
-      let containsCornerHeader = element.parentNode.querySelectorAll('.cornerHeader').length > 0;
-
-      if (containsCornerHeader) {
         return;
       }
     }

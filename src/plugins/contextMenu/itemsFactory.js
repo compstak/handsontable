@@ -1,4 +1,3 @@
-
 import {objectEach, isObject, extend} from './../../helpers/object';
 import {arrayEach} from './../../helpers/array';
 import {
@@ -129,10 +128,6 @@ function getItems(pattern = null, defaultPattern = [], items = {}) {
       }
       result.push(item);
     });
-  }
-  // TODO: Add function which will be cut all separators on the begining
-  if (result[0].name === SEPARATOR) {
-    result.shift();
   }
 
   return result;

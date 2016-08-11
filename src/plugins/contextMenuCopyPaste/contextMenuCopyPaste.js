@@ -1,4 +1,4 @@
-
+import Handsontable from './../../browser';
 import {removeClass} from './../../helpers/dom/element';
 import {arrayEach} from './../../helpers/array';
 import {EventManager} from './../../eventManager';
@@ -116,13 +116,19 @@ class ContextMenuCopyPaste extends BasePlugin {
   onAfterContextMenuDefaultOptions(defaultOptions) {
     defaultOptions.items.unshift({
         key: 'copy',
-        name: 'Copy'
+        name: 'Copy',
+        disabled: function() {
+          return this.selection.selectedHeader.corner;
+        },
       }, {
         key: 'paste',
         name: 'Paste',
         callback: function() {
           this.copyPaste.triggerPaste();
-        }
+        },
+        disabled: function() {
+          return this.selection.selectedHeader.corner;
+        },
       },
       Handsontable.plugins.ContextMenu.SEPARATOR
     );

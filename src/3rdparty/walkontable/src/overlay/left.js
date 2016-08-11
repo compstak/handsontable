@@ -9,6 +9,7 @@ import {
   innerHeight,
   removeClass,
   setOverlayPosition,
+  resetCssTransform
 } from './../../../../helpers/dom/element';
 import {WalkontableOverlay} from './_base';
 
@@ -67,6 +68,7 @@ class WalkontableLeftOverlay extends WalkontableOverlay {
 
     } else {
       headerPosition = this.getScrollPosition();
+      resetCssTransform(overlayRoot);
     }
     this.adjustHeaderBordersPosition(headerPosition);
 
@@ -119,6 +121,8 @@ class WalkontableLeftOverlay extends WalkontableOverlay {
    * @param {Boolean} [force=false]
    */
   adjustElementsSize(force = false) {
+    this.updateTrimmingContainer();
+
     if (this.needFullRender || force) {
       this.adjustRootElementSize();
       this.adjustRootChildrenSize();
@@ -146,7 +150,11 @@ class WalkontableLeftOverlay extends WalkontableOverlay {
       height = Math.min(height, innerHeight(this.wot.wtTable.wtRootElement));
 
       overlayRootStyle.height = height + 'px';
+
+    } else {
+      overlayRootStyle.height = '';
     }
+
     this.clone.wtTable.holder.style.height = overlayRootStyle.height;
 
     tableWidth = outerWidth(this.clone.wtTable.TABLE);
@@ -263,9 +271,16 @@ class WalkontableLeftOverlay extends WalkontableOverlay {
    * @param {Number} position Header X position if trimming container is window or scroll top if not
    */
   adjustHeaderBordersPosition(position) {
-    let masterParent = this.wot.wtTable.holder.parentNode;
-    let rowHeaders = this.wot.getSetting('rowHeaders');
-    let fixedColumnsLeft = this.wot.getSetting('fixedColumnsLeft');
+    const masterParent = this.wot.wtTable.holder.parentNode;
+    const rowHeaders = this.wot.getSetting('rowHeaders');
+    const fixedColumnsLeft = this.wot.getSetting('fixedColumnsLeft');
+    const totalRows = this.wot.getSetting('totalRows');
+
+    if (totalRows) {
+      removeClass(masterParent, 'emptyRows');
+    } else {
+      addClass(masterParent, 'emptyRows');
+    }
 
     if (fixedColumnsLeft && !rowHeaders.length) {
       addClass(masterParent, 'innerBorderLeft');

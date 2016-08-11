@@ -53,9 +53,10 @@ export function inherit(Child, Parent) {
 }
 
 /**
- * Perform shallow extend of a target object with extension's own properties
- * @param {Object} target An object that will receive the new properties
- * @param {Object} extension An object containing additional properties to merge into the target
+ * Perform shallow extend of a target object with extension's own properties.
+ *
+ * @param {Object} target An object that will receive the new properties.
+ * @param {Object} extension An object containing additional properties to merge into the target.
  */
 export function extend(target, extension) {
   objectEach(extension, function(value, key) {
@@ -66,9 +67,10 @@ export function extend(target, extension) {
 }
 
 /**
- * Perform deep extend of a target object with extension's own properties
- * @param {Object} target An object that will receive the new properties
- * @param {Object} extension An object containing additional properties to merge into the target
+ * Perform deep extend of a target object with extension's own properties.
+ *
+ * @param {Object} target An object that will receive the new properties.
+ * @param {Object} extension An object containing additional properties to merge into the target.
  */
 export function deepExtend(target, extension) {
   objectEach(extension, function(value, key) {
@@ -76,6 +78,8 @@ export function deepExtend(target, extension) {
       if (!target[key]) {
         if (Array.isArray(extension[key])) {
           target[key] = [];
+        } else if (Object.prototype.toString.call(extension[key]) === '[object Date]') {
+          target[key] = extension[key];
         } else {
           target[key] = {};
         }
@@ -276,4 +280,31 @@ export function getProperty(object, name) {
   });
 
   return result;
+}
+
+/**
+ * Return object length (recursively).
+ *
+ * @param {*} object Object for which we want get length.
+ * @returns {Number}
+ */
+export function deepObjectSize(object) {
+  if (!isObject(object)) {
+    return 0;
+  }
+  let recursObjLen = function(obj) {
+    let result = 0;
+
+    if (isObject(obj)) {
+      objectEach(obj, (key) => {
+        result += recursObjLen(key);
+      });
+    } else {
+      result++;
+    }
+
+    return result;
+  };
+
+  return recursObjLen(object);
 }

@@ -1,4 +1,4 @@
-
+import Handsontable from './../../browser';
 import {
   addClass,
   closest,
@@ -9,7 +9,7 @@ import {
     } from './../../helpers/dom/element';
 import {EventManager} from './../../eventManager';
 import {WalkontableCellCoords} from './../../3rdparty/walkontable/src/cell/coords';
-import {registerPlugin, getPlugin} from './../../plugins';
+import {registerPlugin} from './../../plugins';
 import BasePlugin from './../_base';
 import {CommentEditor} from './commentEditor';
 
@@ -17,9 +17,9 @@ import {CommentEditor} from './commentEditor';
  * @plugin Comments
  *
  * @description
- * This plugin allows setting an managing cell comments by either an option in the context menu or with the API.
+ * This plugin allows setting and managing cell comments by either an option in the context menu or with the use of the API.
  *
- * To enable the plugin, you'll need to set the `comments` property of the config object to `true`:
+ * To enable the plugin, you'll need to set the comments property of the config object to `true`:
  * ```js
  * ...
  * comments: true
@@ -172,7 +172,7 @@ class Comments extends BasePlugin {
   }
 
   /**
-   * Check if event target is a cell with comment.
+   * Check if event target is a cell containing a comment.
    *
    * @param {Event} event DOM event
    * @returns {Boolean}
@@ -491,7 +491,7 @@ class Comments extends BasePlugin {
         },
         callback: () => this.onContextMenuAddComment(),
         disabled: function() {
-          return this.getSelected() ? false : true;
+          return this.getSelected() && !this.selection.selectedHeader.corner ? false : true;
         }
       },
       {
@@ -501,7 +501,7 @@ class Comments extends BasePlugin {
         },
         callback: (key, selection) => this.onContextMenuRemoveComment(key, selection),
         disabled: () => {
-          return !this.checkSelectionCommentsConsistency();
+          return this.hot.selection.selectedHeader.corner || !this.checkSelectionCommentsConsistency();
         }
       }
     );

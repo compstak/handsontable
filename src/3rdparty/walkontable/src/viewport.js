@@ -1,4 +1,4 @@
-
+import Handsontable from './../../../browser';
 import {
   getScrollbarWidth,
   getScrollTop,
@@ -25,7 +25,7 @@ class WalkontableViewport {
 
     this.oversizedRows = [];
     this.oversizedColumnHeaders = [];
-    this.isMarkedOversizedColumn = {};
+    this.hasOversizedColumnHeadersMarked = {};
     this.clientHeight = 0;
     this.containerWidth = NaN;
     this.rowHeaderWidth = NaN;
@@ -42,7 +42,6 @@ class WalkontableViewport {
    * @returns {number}
    */
   getWorkspaceHeight() {
-    // var scrollHandler = this.instance.wtOverlays.topOverlay.scrollHandler;
     let trimmingContainer = this.instance.wtOverlays.topOverlay.trimmingContainer;
     let elemHeight;
     let height = 0;
@@ -219,11 +218,22 @@ class WalkontableViewport {
    * @returns {Number}
    */
   getRowHeaderWidth() {
+    let rowHeadersHeightSetting = this.instance.getSetting('rowHeaderWidth');
+    let rowHeaders = this.instance.getSetting('rowHeaders');
+
+    if (rowHeadersHeightSetting) {
+      this.rowHeaderWidth = 0;
+
+      for (let i = 0, len = rowHeaders.length; i < len; i++) {
+        this.rowHeaderWidth += rowHeadersHeightSetting[i] || rowHeadersHeightSetting;
+      }
+    }
+
     if (this.wot.cloneSource) {
       return this.wot.cloneSource.wtViewport.getRowHeaderWidth();
     }
+
     if (isNaN(this.rowHeaderWidth)) {
-      let rowHeaders = this.instance.getSetting('rowHeaders');
 
       if (rowHeaders.length) {
         let TH = this.instance.wtTable.TABLE.querySelector('TH');
@@ -369,7 +379,8 @@ class WalkontableViewport {
       },
       visible ? null : this.wot.wtSettings.settings.viewportColumnCalculatorOverride,
       visible,
-      this.wot.getSetting('stretchH')
+      this.wot.getSetting('stretchH'),
+      (stretchedWidth, column) => this.wot.getSetting('onBeforeStretchingColumnWidth', stretchedWidth, column)
     );
   }
 

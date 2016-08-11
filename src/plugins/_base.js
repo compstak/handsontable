@@ -1,3 +1,4 @@
+import Handsontable from './../browser';
 import {defineGetter, objectEach} from './../helpers/object';
 import {arrayEach} from './../helpers/array';
 import {getRegistredPluginNames, getPluginName} from './../plugins';
@@ -150,7 +151,7 @@ class BasePlugin {
   }
 
   /**
-   * Update the plugin's settings
+   * Updates the plugin to use the latest options you have specified.
    *
    * @private
    */
@@ -159,7 +160,7 @@ class BasePlugin {
   }
 
   /**
-   * Destroy plugin
+   * Destroy plugin.
    */
   destroy() {
     if (this.eventManager) {

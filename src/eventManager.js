@@ -1,6 +1,7 @@
-
+import Handsontable from './browser';
 import {polymerWrap, closest} from './helpers/dom/element';
-import {isWebComponentSupportedNatively} from './helpers/browser';
+import {isWebComponentSupportedNatively} from './helpers/feature';
+import {stopImmediatePropagation as _stopImmediatePropagation} from './helpers/dom/event';
 
 /**
  * Event DOM manager for internal use in Handsontable.
@@ -33,28 +34,6 @@ class EventManager {
     let context = this.context;
 
     function callbackProxy(event) {
-      if (event.target == void 0 && event.srcElement != void 0) {
-        if (event.definePoperty) {
-          event.definePoperty('target', {
-            value: event.srcElement
-          });
-        } else {
-          event.target = event.srcElement;
-        }
-      }
-      if (event.preventDefault == void 0) {
-        if (event.definePoperty) {
-          event.definePoperty('preventDefault', {
-            value: function() {
-              this.returnValue = false;
-            }
-          });
-        } else {
-          event.preventDefault = function() {
-            this.returnValue = false;
-          };
-        }
-      }
       event = extendEvent(context, event);
 
       /* jshint validthis:true */
@@ -203,9 +182,16 @@ function extendEvent(context, event) {
   let realTarget;
   let target;
   let len;
+  let nativeStopImmediatePropagation;
 
   event.isTargetWebComponent = false;
   event.realTarget = event.target;
+
+  nativeStopImmediatePropagation = event.stopImmediatePropagation;
+  event.stopImmediatePropagation = function() {
+    nativeStopImmediatePropagation.apply(this);
+    _stopImmediatePropagation(this);
+  };
 
   if (!Handsontable.eventManager.isHotTableEnv) {
     return event;
@@ -265,7 +251,6 @@ function extendEvent(context, event) {
 
 export {EventManager, eventManager};
 
-window.Handsontable = window.Handsontable || {};
 // used to debug memory leaks
 Handsontable.countEventManagerListeners = 0;
 // support for older versions of Handsontable, deprecated

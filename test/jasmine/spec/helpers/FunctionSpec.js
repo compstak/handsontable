@@ -138,4 +138,117 @@ describe('Function helper', function() {
       });
     });
   });
+
+  //
+  // Handsontable.helper.pipe
+  //
+  describe('pipe', function() {
+    it('should returns new function with piped all passed functions', function() {
+      var spy1 = jasmine.createSpyObj('spy', ['test1', 'test2', 'test3', 'test4']);
+      var pipe = Handsontable.helper.pipe;
+
+      spy1.test1.andCallFake(function(a) { return a + 1 });
+      spy1.test2.andCallFake(function(a) { return a + 1 });
+      spy1.test3.andCallFake(function(a) { return a + 1 });
+      spy1.test4.andCallFake(function(a) { return a + 1 });
+
+      var piped = pipe(spy1.test1, spy1.test2, spy1.test3, spy1.test4);
+
+      var result = piped(1, 2, 'foo');
+
+      expect(spy1.test1).toHaveBeenCalledWith(1, 2, 'foo');
+      expect(spy1.test2).toHaveBeenCalledWith(2);
+      expect(spy1.test3).toHaveBeenCalledWith(3);
+      expect(spy1.test4).toHaveBeenCalledWith(4);
+      expect(result).toBe(5);
+    });
+  });
+
+  //
+  // Handsontable.helper.partial
+  //
+  describe('partial', function() {
+    it('should returns new function with cached arguments', function() {
+      var spy1 = jasmine.createSpyObj('spy', ['test1', 'test2', 'test3', 'test4']);
+      var partial = Handsontable.helper.partial;
+
+      spy1.test1.andCallFake(function(a, b, c) { return (a + b) + c });
+
+      var partialized = partial(spy1.test1, 1, 2);
+
+      expect(partialized('foo')).toBe('3foo');
+
+      partialized = partial(spy1.test1);
+
+      expect(partialized(1, 2, 'foo')).toBe('3foo');
+
+      partialized = partial(spy1.test1, 1, 2, 3);
+
+      expect(partialized('foo')).toBe(6);
+    });
+  });
+
+  //
+  // Handsontable.helper.curry
+  //
+  describe('curry', function() {
+    it('should returns new function with cached arguments (collecting arguments from the left to the right)', function() {
+      var curry = Handsontable.helper.curry;
+      var fn = function(a, b, c) { return (a + b) + c };
+
+      var curried = curry(fn);
+
+      expect(curried(1, 2, 'foo')).toBe('3foo');
+      expect(curried(1)(2)('foo')).toBe('3foo');
+      expect(curried(1, 2)(3)).toBe(6);
+    });
+  });
+
+  //
+  // Handsontable.helper.curryRight
+  //
+  describe('curryRight', function() {
+    it('should returns new function with cached arguments (collecting arguments from the right to the left)', function() {
+      var curry = Handsontable.helper.curryRight;
+      var fn = function(a, b, c) { return (a + b) + c };
+
+      var curried = curry(fn);
+
+      expect(curried('foo', 2, 1)).toBe('3foo');
+      expect(curried(1, 2, 'foo')).toBe('foo21');
+      expect(curried(1)(2)('foo')).toBe('3foo');
+      expect(curried(1, 2)(3)).toBe(6);
+    });
+  });
+
+  //
+  // Handsontable.helper.isFunction
+  //
+  describe('isFunction', function() {
+    it('should correctly detect function', function() {
+      var isFunction = Handsontable.helper.isFunction;
+      var toCheck = [
+        function() {},
+        {id: function() {}},
+        1,
+        'text',
+        /^\d+$/,
+        true
+      ];
+
+      function namedFunc() {}
+
+      expect(isFunction(toCheck[0])).toBeTruthy();
+      expect(isFunction(toCheck[1].id)).toBeTruthy();
+      expect(isFunction(namedFunc)).toBeTruthy();
+      expect(isFunction(function() {})).toBeTruthy();
+
+      expect(isFunction(toCheck)).toBeFalsy();
+      expect(isFunction(toCheck[1])).toBeFalsy();
+      expect(isFunction(toCheck[2])).toBeFalsy();
+      expect(isFunction(toCheck[3])).toBeFalsy();
+      expect(isFunction(toCheck[4])).toBeFalsy();
+      expect(isFunction(toCheck[5])).toBeFalsy();
+    });
+  });
 });
