@@ -4274,7 +4274,7 @@ var domHelpers = ($__helpers_47_dom_47_element__ = _dereq_("helpers/dom/element"
 var domEventHelpers = ($__helpers_47_dom_47_event__ = _dereq_("helpers/dom/event"), $__helpers_47_dom_47_event__ && $__helpers_47_dom_47_event__.__esModule && $__helpers_47_dom_47_event__ || {default: $__helpers_47_dom_47_event__});
 var HELPERS = [arrayHelpers, browserHelpers, dataHelpers, dateHelpers, featureHelpers, functionHelpers, mixedHelpers, numberHelpers, objectHelpers, settingHelpers, stringHelpers, unicodeHelpers];
 var DOM = [domHelpers, domEventHelpers];
-Handsontable.buildDate = 'Wed Jul 27 2016 12:03:17 GMT+0200 (CEST)';
+Handsontable.buildDate = 'Fri Aug 12 2016 11:04:42 GMT-0400 (EDT)';
 Handsontable.packageName = 'handsontable';
 Handsontable.version = '0.26.1';
 var baseVersion = '@@baseVersion';
@@ -11361,7 +11361,7 @@ Object.defineProperties(exports, {
 });
 var $__helpers_47_array__,
     $__helpers_47_object__;
-var REGISTERED_HOOKS = ['afterCellMetaReset', 'afterChange', 'afterChangesObserved', 'afterContextMenuDefaultOptions', 'afterContextMenuHide', 'afterContextMenuShow', 'afterCopyLimit', 'afterCreateCol', 'afterCreateRow', 'afterDeselect', 'afterDestroy', 'afterDocumentKeyDown', 'afterGetCellMeta', 'afterGetColHeader', 'afterGetRowHeader', 'afterInit', 'afterLoadData', 'afterMomentumScroll', 'afterOnCellCornerMouseDown', 'afterOnCellMouseDown', 'afterOnCellMouseOver', 'afterRemoveCol', 'afterRemoveRow', 'afterRender', 'beforeRenderer', 'afterRenderer', 'afterScrollHorizontally', 'afterScrollVertically', 'afterSelection', 'afterSelectionByProp', 'afterSelectionEnd', 'afterSelectionEndByProp', 'afterSetCellMeta', 'afterUpdateSettings', 'afterValidate', 'beforeAutofill', 'beforeCellAlignment', 'beforeChange', 'beforeChangeRender', 'beforeDrawBorders', 'beforeGetCellMeta', 'beforeInit', 'beforeInitWalkontable', 'beforeKeyDown', 'beforeOnCellMouseDown', 'beforeOnCellMouseOver', 'beforeRemoveCol', 'beforeRemoveRow', 'beforeRender', 'beforeSetRangeStart', 'beforeSetRangeEnd', 'beforeTouchScroll', 'beforeValidate', 'construct', 'init', 'modifyCol', 'unmodifyCol', 'modifyColHeader', 'modifyColWidth', 'modifyRow', 'modifyRowHeader', 'modifyRowHeight', 'persistentStateLoad', 'persistentStateReset', 'persistentStateSave', 'beforeColumnSort', 'afterColumnSort', 'afterAutofillApplyValues', 'modifyCopyableRange', 'beforeColumnMove', 'afterColumnMove', 'beforeRowMove', 'afterRowMove', 'beforeColumnResize', 'afterColumnResize', 'beforeRowResize', 'afterRowResize', 'afterGetColumnHeaderRenderers', 'afterGetRowHeaderRenderers', 'beforeStretchingColumnWidth', 'beforeFilter', 'afterFilter', 'modifyColumnHeaderHeight'];
+var REGISTERED_HOOKS = ['afterCellMetaReset', 'afterChange', 'afterChangesObserved', 'afterContextMenuDefaultOptions', 'afterContextMenuHide', 'beforeContextMenuShow', 'afterContextMenuShow', 'afterCopyLimit', 'afterCreateCol', 'afterCreateRow', 'afterDeselect', 'afterDestroy', 'afterDocumentKeyDown', 'afterGetCellMeta', 'afterGetColHeader', 'afterGetRowHeader', 'afterInit', 'afterLoadData', 'afterMomentumScroll', 'afterOnCellCornerMouseDown', 'afterOnCellMouseDown', 'afterOnCellMouseOver', 'afterRemoveCol', 'afterRemoveRow', 'afterRender', 'beforeRenderer', 'afterRenderer', 'afterScrollHorizontally', 'afterScrollVertically', 'afterSelection', 'afterSelectionByProp', 'afterSelectionEnd', 'afterSelectionEndByProp', 'afterSetCellMeta', 'afterUpdateSettings', 'afterValidate', 'beforeAutofill', 'beforeCellAlignment', 'beforeChange', 'beforeChangeRender', 'beforeDrawBorders', 'beforeGetCellMeta', 'beforeInit', 'beforeInitWalkontable', 'beforeKeyDown', 'beforeOnCellMouseDown', 'beforeOnCellMouseOver', 'beforeRemoveCol', 'beforeRemoveRow', 'beforeRender', 'beforeSetRangeStart', 'beforeSetRangeEnd', 'beforeTouchScroll', 'beforeValidate', 'construct', 'init', 'modifyCol', 'unmodifyCol', 'modifyColHeader', 'modifyColWidth', 'modifyRow', 'modifyRowHeader', 'modifyRowHeight', 'persistentStateLoad', 'persistentStateReset', 'persistentStateSave', 'beforeColumnSort', 'afterColumnSort', 'afterAutofillApplyValues', 'modifyCopyableRange', 'beforeColumnMove', 'afterColumnMove', 'beforeRowMove', 'afterRowMove', 'beforeColumnResize', 'afterColumnResize', 'beforeRowResize', 'afterRowResize', 'afterGetColumnHeaderRenderers', 'afterGetRowHeaderRenderers', 'beforeStretchingColumnWidth', 'beforeFilter', 'afterFilter', 'modifyColumnHeaderHeight'];
 var arrayEach = ($__helpers_47_array__ = _dereq_("helpers/array"), $__helpers_47_array__ && $__helpers_47_array__.__esModule && $__helpers_47_array__ || {default: $__helpers_47_array__}).arrayEach;
 var objectEach = ($__helpers_47_object__ = _dereq_("helpers/object"), $__helpers_47_object__ && $__helpers_47_object__.__esModule && $__helpers_47_object__ || {default: $__helpers_47_object__}).objectEach;
 var Hooks = function Hooks() {
@@ -13556,11 +13556,19 @@ var $ContextMenu = ContextMenu;
       $__12.hot.runHooks('afterContextMenuDefaultOptions', predefinedItems);
       $__12.itemsFactory.setPredefinedItems(predefinedItems.items);
       var menuItems = $__12.itemsFactory.getItems(settings);
-      $__12.menu = new Menu($__12.hot, {
+      var options = {
         className: 'htContextMenu',
         keepInViewport: true
-      });
+      };
+      if (settings.options) {
+        Object.assign(options, settings.options);
+      }
+      $__12.menu = new Menu($__12.hot, options);
       $__12.menu.setMenuItems(menuItems);
+      $__12.menu.addLocalHook('beforeOpen', (function() {
+        $__12.onBeforeContextMenuShow();
+        $__12.hot.runHooks('beforeContextMenuShow', $__12);
+      }));
       $__12.menu.addLocalHook('afterOpen', (function() {
         return $__12.onMenuAfterOpen();
       }));
@@ -13621,6 +13629,54 @@ var $ContextMenu = ContextMenu;
       params[$__14] = arguments[$__14];
     this.commandExecutor.execute.apply(this.commandExecutor, params);
   },
+  changeItems: function(removeItemFunction, newItems) {
+    var $__12 = this;
+    if (typeof removeItemFunction === 'function') {
+      arrayEach(Object.entries(this.itemsFactory.predefinedItems), (function(entry) {
+        var key = entry[0];
+        var item = entry[1];
+        if (removeItemFunction(key, item)) {
+          delete $__12.itemsFactory.predefinedItems[key];
+        }
+      }));
+    }
+    arrayEach(Object.entries(newItems || {}), (function(entry) {
+      var key = entry[0];
+      var item = entry[1];
+      $__12.itemsFactory.predefinedItems[key] = item;
+    }));
+    var menuItems = this.itemsFactory.predefinedItems;
+    this.itemsFactory.setPredefinedItems(menuItems);
+    var options = {
+      className: 'htContextMenu',
+      keepInViewport: true
+    };
+    var settings = this.hot.getSettings().contextMenu;
+    if (settings.options) {
+      Object.assign(options, settings.options);
+    }
+    this.menu = new Menu(this.hot, options);
+    this.menu.setMenuItems(menuItems);
+    this.menu.addLocalHook('beforeOpen', (function() {
+      $__12.onBeforeContextMenuShow();
+      $__12.hot.runHooks('beforeContextMenuShow', $__12);
+    }));
+    this.menu.addLocalHook('afterOpen', (function() {
+      return $__12.onMenuAfterOpen();
+    }));
+    this.menu.addLocalHook('afterClose', (function() {
+      return $__12.onMenuAfterClose();
+    }));
+    this.menu.addLocalHook('executeCommand', (function() {
+      for (var params = [],
+          $__15 = 0; $__15 < arguments.length; $__15++)
+        params[$__15] = arguments[$__15];
+      return $__12.executeCommand.apply($__12, params);
+    }));
+    arrayEach(menuItems, (function(command) {
+      return $__12.commandExecutor.registerCommand(command.key, command);
+    }));
+  },
   onContextMenu: function(event) {
     var settings = this.hot.getSettings();
     var showRowHeaders = settings.rowHeaders;
@@ -13638,6 +13694,10 @@ var $ContextMenu = ContextMenu;
       }
     }
     this.open(event);
+  },
+  onBeforeContextMenuShow: function() {
+    var menuItems = this.itemsFactory.getVisibleItems();
+    this.menu.setMenuItems(menuItems);
   },
   onMenuAfterOpen: function() {
     this.hot.runHooks('afterContextMenuShow', this);
@@ -13661,6 +13721,7 @@ Handsontable.hooks.register('afterContextMenuDefaultOptions');
 Handsontable.hooks.register('afterContextMenuShow');
 Handsontable.hooks.register('afterContextMenuHide');
 Handsontable.hooks.register('afterContextMenuExecute');
+Handsontable.hooks.register('beforeContextMenuShow');
 ;
 registerPlugin('contextMenu', ContextMenu);
 
@@ -13795,6 +13856,17 @@ var ItemsFactory = function ItemsFactory(hotInstance) {
     }));
     this.predefinedItems = items;
   },
+  getVisibleItems: function() {
+    var pattern = arguments[0] !== (void 0) ? arguments[0] : null;
+    var $__3 = this;
+    var visibleItems = {};
+    objectEach(this.predefinedItems, (function(value, key) {
+      if (!value.hidden || value.hidden && !value.hidden.apply($__3.hot, [key])) {
+        visibleItems[key] = value;
+      }
+    }));
+    return getItems(pattern, this.defaultOrderPattern, visibleItems);
+  },
   getItems: function() {
     var pattern = arguments[0] !== (void 0) ? arguments[0] : null;
     return getItems(pattern, this.defaultOrderPattern, this.predefinedItems);
@@ -13829,7 +13901,7 @@ function getItems() {
   } else {
     arrayEach(pattern, (function(name, key) {
       var item = items[name];
-      if (!item && ITEMS.indexOf(name) >= 0) {
+      if (!item && ITEMS.indexOf(name) < 0) {
         return;
       }
       if (!item) {
@@ -13922,6 +13994,7 @@ var Menu = function Menu(hotInstance, options) {
     left: 0,
     right: 0
   };
+  this.width = 200;
   this._afterScrollCallback = null;
   this.registerEvents();
 };
@@ -13947,9 +14020,11 @@ var $Menu = Menu;
     var $__12 = this;
     this.container.removeAttribute('style');
     this.container.style.display = 'block';
+    this.runLocalHooks('beforeOpen');
     var delayedOpenSubMenu = debounce((function(row) {
       return $__12.openSubMenu(row);
     }), 300);
+    var width = this.options.width || this.width;
     var filteredItems = arrayFilter(this.menuItems, (function(item) {
       return isItemHidden(item, $__12.hot);
     }));
@@ -13957,7 +14032,7 @@ var $Menu = Menu;
     var settings = {
       data: filteredItems,
       colHeaders: false,
-      colWidths: [200],
+      colWidths: [width],
       autoRowSize: false,
       readOnly: true,
       copyPaste: false,
